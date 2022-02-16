@@ -1,44 +1,41 @@
 import os
 import random
 from urllib import request
-import itertools
 
-if not os.path.isfile('count_1w.txt'):
+if not os.path.isfile("sgb-words.txt"):
     request.urlretrieve(
-        "https://norvig.com/ngrams/count_1w.txt",
-        "count_1w.txt")
+        "https://www-cs-faculty.stanford.edu/~knuth/sgb-words.txt", "sgb-words.txt"
+    )
 
-with open('count_1w.txt') as file:
-    five_letter_words = list(itertools.islice((
-        word for word, _ in (line.strip().split('\t') for line in file)
-        if len(word) == 5), 10000))
+with open("sgb-words.txt") as word_list:
+    five_letter_words = word_list.readlines()
 
 word = random.choice(five_letter_words)
-t = 5
+total_chances_left = 5
 
 while True:
-    if t == 0:
-        print('You lost. Better luck next time!')
-        print('The word was ', word)
+    if total_chances_left == 0:
+        print("You lost. Better luck next time!")
+        print(f"The word was {word}")
         break
     j = 0
-    guess = input('Guess the 5 letter word: ')
+    guess = input("Guess the 5 letter word: ")
     if guess == word:
-        print('🟩🟩🟩🟩🟩')
-        print('You Won!!!')
+        print("🟩🟩🟩🟩🟩")
+        print("You Won!!!")
         break
     elif len(guess) == 5:
-        grid = {i: '⬛' for i in range(5)}
+        grid = {i: "⬛" for i in range(5)}
         count = {i: 0 for i in set(guess)}
         for i in guess:
             count[i] += 1
             if i == word[j]:
-                grid[j] = '🟩'
+                grid[j] = "🟩"
             elif i in word and word.count(i) >= count[i]:
-                grid[j] = '🟨'
+                grid[j] = "🟨"
             j += 1
-        print(''.join(grid.values()))
-        t -= 1
+        print("".join(grid.values()))
+        total_chances_left -= 1
     else:
-        print('Give a valid 5 letter word.')
-    print('Total chances left: ', t)
+        print("Give a valid 5 letter word.")
+    print(f"Total chances left: {total_chances_left}")
